@@ -1,6 +1,34 @@
 @WebApp_HostAddress = http://localhost:5238
 
-GET {{WebApp_HostAddress}}/weatherforecast/
+### Получить все события
+GET {{WebApp_HostAddress}}/events
 Accept: application/json
 
-###
+### Получить событие по id (пример — замените на реальный id из GET /events)
+GET {{WebApp_HostAddress}}/events/00000000-0000-0000-0000-000000000000
+Accept: application/json
+
+### Создать событие
+POST {{WebApp_HostAddress}}/events
+Content-Type: application/json
+
+{
+  "title": "Конференция",
+  "description": "Ежегодная конференция разработчиков",
+  "startAt": "2026-01-15T10:00:00Z",
+  "endAt": "2026-01-15T18:00:00Z"
+}
+
+### Обновить событие целиком (пример — замените на реальный id)
+PUT {{WebApp_HostAddress}}/events/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "title": "Конференция (обновлённая)",
+  "description": "Обновлённое описание",
+  "startAt": "2026-01-16T10:00:00Z",
+  "endAt": "2026-01-16T18:00:00Z"
+}
+
+### Удалить событие (пример — замените на реальный id)
+DELETE {{WebApp_HostAddress}}/events/00000000-0000-0000-0000-000000000000
