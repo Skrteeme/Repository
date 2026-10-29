@@ -1,6 +1,56 @@
 @WebApp_HostAddress = http://localhost:5238
 
-GET {{WebApp_HostAddress}}/weatherforecast/
+### Получить все события (первая страница, 10 элементов)
+GET {{WebApp_HostAddress}}/events
 Accept: application/json
 
-###
+### Фильтрация по названию (регистронезависимое частичное совпадение)
+GET {{WebApp_HostAddress}}/events?title=Мероприятие
+Accept: application/json
+
+### Фильтрация по датам: начало не раньше from, окончание не позже to
+GET {{WebApp_HostAddress}}/events?from=2026-01-01T00:00:00Z&to=2026-12-31T23:59:59Z
+Accept: application/json
+
+### Комбинированная фильтрация и пагинация
+GET {{WebApp_HostAddress}}/events?title=Мероприятие&from=2026-01-01T00:00:00Z&to=2026-06-30T23:59:59Z&page=2&pageSize=5
+Accept: application/json
+
+### Получить событие по id (пример — замените на реальный id из GET /events)
+GET {{WebApp_HostAddress}}/events/00000000-0000-0000-0000-000000000000
+Accept: application/json
+
+### Создать событие
+POST {{WebApp_HostAddress}}/events
+Content-Type: application/json
+
+{
+  "title": "Мероприятие",
+  "description": "Описание мероприятия",
+  "startAt": "2026-01-15T10:00:00Z",
+  "endAt": "2026-01-15T18:00:00Z"
+}
+
+### Создать событие с некорректными данными (400, единый формат ошибки)
+POST {{WebApp_HostAddress}}/events
+Content-Type: application/json
+
+{
+  "title": "Мероприятие",
+  "startAt": "2026-01-15T18:00:00Z",
+  "endAt": "2026-01-15T10:00:00Z"
+}
+
+### Обновить событие целиком (пример — замените на реальный id)
+PUT {{WebApp_HostAddress}}/events/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "title": "Мероприятие (обновлённая)",
+  "description": "Обновлённое описание",
+  "startAt": "2026-01-16T10:00:00Z",
+  "endAt": "2026-01-16T18:00:00Z"
+}
+
+### Удалить событие (пример — замените на реальный id)
+DELETE {{WebApp_HostAddress}}/events/00000000-0000-0000-0000-000000000000

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="WebApp.csproj" />
+  <Project Path="tests/EventService.Tests/EventService.Tests.csproj" />
+</Solution>
