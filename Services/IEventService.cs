@@ -3,32 +3,32 @@ using EventApi.Contracts;
 namespace EventApi.Services;
 
 /// <summary>
-/// Сервис для работы с событиями
+/// Сервис для работы с событиями.
 /// </summary>
 public interface IEventService
 {
     /// <summary>
-    /// Возвращает список всех событий
+    /// Возвращает страницу событий, отфильтрованных по параметрам <paramref name="filter"/>.
     /// </summary>
-    IReadOnlyList<EventResponse> GetAll();
+    PaginatedResult<EventResponse> GetAll(EventFilter filter);
 
     /// <summary>
-    /// Возвращает событие по идентификатору
+    /// Возвращает событие по идентификатору.
     /// </summary>
     EventResponse? GetById(Guid id);
 
     /// <summary>
-    /// Создаёт новое событие
+    /// Создаёт новое событие.
     /// </summary>
     EventResponse Create(EventRequest request);
 
     /// <summary>
-    /// Обновляет событие целиком
+    /// Обновляет событие целиком.
     /// </summary>
     EventResponse? Update(Guid id, EventRequest request);
 
     /// <summary>
-    /// Удаляет событие. Возвращает true, если событие было найдено и удалено
+    /// Удаляет событие. Возвращает true, если событие было найдено и удалено.
     /// </summary>
     bool Delete(Guid id);
 }

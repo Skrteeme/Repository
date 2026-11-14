@@ -4,7 +4,7 @@ using EventApi.Models;
 namespace EventApi.Mapping;
 
 /// <summary>
-/// Маппинг между моделью <see cref="Event"/> и DTO
+/// Маппинг между моделью <see cref="Event"/> и DTO.
 /// </summary>
 public static class EventMapper
 {
@@ -15,6 +15,7 @@ public static class EventMapper
             Id = id,
             Title = request.Title.Trim(),
             Description = request.Description,
+            // К моменту вызова метода валидация уже пройдена (модель корректна), поэтому значения гарантированно есть.
             StartAt = request.StartAt!.Value,
             EndAt = request.EndAt!.Value
         };

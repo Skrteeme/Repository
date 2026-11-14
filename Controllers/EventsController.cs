@@ -1,11 +1,12 @@
 using EventApi.Contracts;
+using EventApi.Exceptions;
 using EventApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventApi.Controllers;
 
 /// <summary>
-/// REST API для работы с событиями
+/// REST API для работы с событиями.
 /// </summary>
 [ApiController]
 [Route("events")]
@@ -20,39 +21,41 @@ public class EventsController : ControllerBase
     }
 
     /// <summary>
-    /// Получить список всех событий
+    /// Получить страницу событий с фильтрацией по названию и датам.
     /// </summary>
+    /// <param name="filter">Параметры фильтрации и пагинации событий.</param>
     [HttpGet]
-    [ProducesResponseType(typeof(IReadOnlyList<EventResponse>), StatusCodes.Status200OK)]
-    public IActionResult GetAll()
+    [ProducesResponseType(typeof(PaginatedResult<EventResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public IActionResult GetAll([FromQuery] EventFilter filter)
     {
-        var events = _eventService.GetAll();
-        return Ok(events);
+        var result = _eventService.GetAll(filter);
+        return Ok(result);
     }
 
     /// <summary>
-    /// Получить событие по идентификатору
+    /// Получить событие по идентификатору.
     /// </summary>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(EventResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public IActionResult GetById(Guid id)
     {
         var entity = _eventService.GetById(id);
         if (entity is null)
         {
-            return NotFound(new { message = $"Событие с id '{id}' не найдено." });
+            throw new NotFoundException($"Событие с id '{id}' не найдено.");
         }
 
         return Ok(entity);
     }
 
     /// <summary>
-    /// Создать новое событие
+    /// Создать новое событие.
     /// </summary>
     [HttpPost]
     [ProducesResponseType(typeof(EventResponse), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public IActionResult Create([FromBody] EventRequest request)
     {
         var entity = _eventService.Create(request);
@@ -60,35 +63,35 @@ public class EventsController : ControllerBase
     }
 
     /// <summary>
-    /// Обновить событие целиком
+    /// Обновить событие целиком.
     /// </summary>
     [HttpPut("{id:guid}")]
     [ProducesResponseType(typeof(EventResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public IActionResult Update(Guid id, [FromBody] EventRequest request)
     {
         var entity = _eventService.Update(id, request);
         if (entity is null)
         {
-            return NotFound(new { message = $"Событие с id '{id}' не найдено." });
+            throw new NotFoundException($"Событие с id '{id}' не найдено.");
         }
 
         return Ok(entity);
     }
 
     /// <summary>
-    /// Удалить событие
+    /// Удалить событие.
     /// </summary>
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public IActionResult Delete(Guid id)
     {
         var deleted = _eventService.Delete(id);
         if (!deleted)
         {
-            return NotFound(new { message = $"Событие с id '{id}' не найдено." });
+            throw new NotFoundException($"Событие с id '{id}' не найдено.");
         }
 
         return NoContent();
